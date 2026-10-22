@@ -7,7 +7,7 @@ export default defineRailway((ctx) => {
   // 500 MB stays within the documented 0.5 GB Free/Trial volume ceiling.
   const data = volume("panel-data", { sizeMB: 500 });
   const panel = service("panel", {
-    source: github("devv1112/panel", { branch: "arena/263b0995-panel" }),
+    source: github("devv1112/panel", { branch: "main" }),
     build: { builder: "DOCKERFILE", dockerfilePath: "Dockerfile" },
     replicas: 1,
     healthcheck: "/health",

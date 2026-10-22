@@ -9,7 +9,7 @@ runs migrations and creates a private initial Owner automatically. The provision
 script requests the service, volume and domain after your approval; a repository
 URL alone cannot authorize cloud resource creation. No free
 uptime guarantee and no VPN traffic node are implied. Initial credentials are
-never printed in deployment logs. Use branch `arena/263b0995-panel` until merged.
+never printed in deployment logs. The previous PR is merged; use the stable `main` branch for deployments.
 
 <p align="center">
   <a href="https://github.com/PasarGuard/panel" target="_blank" rel="noopener noreferrer">

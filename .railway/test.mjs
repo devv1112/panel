@@ -12,7 +12,7 @@ for (const environment of ["production", "staging"]) {
   const panel = resources.find((item) => item.name === "panel");
   const data = resources.find((item) => item.name === "panel-data");
   assert.equal(panel.source.repo, "devv1112/panel");
-  assert.equal(panel.source.branch, "arena/263b0995-panel");
+  assert.equal(panel.source.branch, "main");
   assert.equal(panel.build.builder, "DOCKERFILE");
   assert.equal(panel.deploy.healthcheckPath, "/health");
   assert.equal(panel.deploy.healthcheckTimeout, 120);

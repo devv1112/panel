@@ -7,9 +7,16 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 # Railway's account resources cannot be created by an application entrypoint.
 # Configure only after verifying a real volume; retain normal behavior elsewhere.
 if [ -n "${RAILWAY_ENVIRONMENT_ID:-}" ] && [ "${PASARGUARD_RAILWAY_READY:-}" != "1" ]; then
-    case "${PASARGUARD_RAILWAY_AUTO_CONFIG:-true}" in
+    # Match the Python parser: case-insensitive, surrounding whitespace ignored.
+    railway_auto_config="${PASARGUARD_RAILWAY_AUTO_CONFIG-true}"
+    railway_auto_config="${railway_auto_config,,}"
+    railway_auto_config="${railway_auto_config#"${railway_auto_config%%[![:space:]]*}"}"
+    railway_auto_config="${railway_auto_config%"${railway_auto_config##*[![:space:]]}"}"
+    export PASARGUARD_RAILWAY_AUTO_CONFIG="$railway_auto_config"
+    case "$railway_auto_config" in
         false) ;;
-        *) exec python railway_runtime.py ;;
+        true) exec python railway_runtime.py ;;
+        *) echo 'ERROR: PASARGUARD_RAILWAY_AUTO_CONFIG must be true or false' >&2; exit 2 ;;
     esac
 fi
 

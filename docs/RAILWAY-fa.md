@@ -28,7 +28,7 @@
 پیش‌نیاز محلی: Git، Node.js 22+، npm، Bash (Linux/macOS/WSL) و دسترسی به حساب خودتان. ابتدا اجازهٔ دسترسی Railway به مخزن GitHub را در مرورگر تأیید کنید؛ هیچ رمز یا token را در چت یا کد نگذارید.
 
 ```sh
-git clone --depth 1 --branch arena/263b0995-panel https://github.com/devv1112/panel.git
+git clone --depth 1 --branch main https://github.com/devv1112/panel.git
 cd panel
 npm install -g @railway/cli@5.71.0
 railway login
@@ -66,11 +66,11 @@ SDK روی Node 22 در این محیط type-check و برای production/stagin
 
 ```text
 Repository: devv1112/panel
-Branch: arena/263b0995-panel
+Branch: main
 Root directory: /
 ```
 
-اگر Railway ابتدا main را انتخاب کرد، در **Settings → Source** شاخه را اصلاح کنید. تغییرات این جلسه تا زمان merge در main نیستند. اگر Fork می‌گیرید، وجود همین شاخه را در Fork بررسی کنید.
+در **Settings → Source** بررسی کنید شاخه روی `main` باشد. نسخهٔ قبلی در main ادغام شده است؛ از شاخهٔ قدیمی و پایان‌یافته برای استقرار جدید استفاده نکنید. اگر Fork می‌گیرید، وجود همین شاخه را در Fork بررسی کنید.
 
 ### ۲. volume — تنها منبع لازم برای این preset
 
