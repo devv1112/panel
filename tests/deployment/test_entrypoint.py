@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class EntrypointTests(unittest.TestCase):
-    def run_entrypoint(self, role, migration_status=0, *, railway_ready=False, bootstrap_status=0):
+    def run_entrypoint(self, role, migration_status=0, *, railway_ready=False, bootstrap_status=0, environment=None):
         with tempfile.TemporaryDirectory() as directory:
             directory = Path(directory)
             trace = directory / "trace"
@@ -34,6 +34,7 @@ if [ "$1" = "-m" ]; then exit "$MIGRATION_STATUS"; fi
                     "MIGRATION_STATUS": str(migration_status),
                     "PASARGUARD_RAILWAY_READY": "1" if railway_ready else "",
                     "BOOTSTRAP_STATUS": str(bootstrap_status),
+                    **(environment or {}),
                 },
             )
             return result, trace.read_text().splitlines() if trace.exists() else []
@@ -101,3 +102,36 @@ class RailwayEntrypointTests(unittest.TestCase):
         result, trace = self.run_entrypoint("all-in-one", railway_ready=True, migration_status=17)
         self.assertEqual(result.returncode, 17)
         self.assertEqual(len(trace), 1)
+
+
+class RailwayConfigurationDispatchTests(unittest.TestCase):
+    run_entrypoint = EntrypointTests.run_entrypoint
+
+    def test_false_variants_skip_automatic_profile(self):
+        for value in ("false", "FALSE", " False ", "\tfalse\n"):
+            with self.subTest(value=value):
+                result, trace = self.run_entrypoint(
+                    "all-in-one",
+                    environment={"RAILWAY_ENVIRONMENT_ID": "test", "PASARGUARD_RAILWAY_AUTO_CONFIG": value},
+                )
+                self.assertEqual(result.returncode, 0)
+                self.assertEqual([line.split("|")[-1] for line in trace], ["-m alembic upgrade head", "main.py"])
+
+    def test_true_variants_dispatch_to_volume_guard(self):
+        for value in ("true", "TRUE", " True "):
+            with self.subTest(value=value):
+                result, trace = self.run_entrypoint(
+                    "all-in-one",
+                    environment={"RAILWAY_ENVIRONMENT_ID": "test", "PASARGUARD_RAILWAY_AUTO_CONFIG": value},
+                )
+                self.assertEqual(result.returncode, 0)
+                self.assertEqual([line.split("|")[-1] for line in trace], ["railway_runtime.py"])
+
+    def test_invalid_value_fails_before_migration(self):
+        result, trace = self.run_entrypoint(
+            "all-in-one",
+            environment={"RAILWAY_ENVIRONMENT_ID": "test", "PASARGUARD_RAILWAY_AUTO_CONFIG": "typo"},
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(trace, [])
+        self.assertIn("PASARGUARD_RAILWAY_AUTO_CONFIG", result.stderr)
