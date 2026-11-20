@@ -1,0 +1,15 @@
+{
+  "name": "coarena-chat-simulator-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "dev": "node --watch --env-file=.env src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {}
+}
